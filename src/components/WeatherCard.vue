@@ -8,12 +8,18 @@
         <div class="weather-info">
           <div class="weather-description">{{ weatherDescription }}</div>
           <div class="weather-temperature">{{ temperature }}°C</div>
+          <div class="weather-icon">
+            <img :src="getWeatherIconUrl(weatherIconCode)" alt="Weather Icon">
+          </div>
         </div>
       </div>
       <div class="weather-details">
         <div class="weather-info">
           <div class="weather-description">{{ tomorrowWeatherDescription }}</div>
           <div class="weather-temperature">{{ tomorrowTemperature }}°C</div>
+          <div class="weather-icon">
+            <img :src="getWeatherIconUrl(tomorrowWeatherIconCode)" alt="Weather Icon">
+          </div>
         </div>
       </div>
     </div>
@@ -27,7 +33,6 @@
 <script>
 
 export default {
-  
   props: {
     city: {
       type: String,
@@ -35,54 +40,54 @@ export default {
     },
   },
   data() {
-  return {
-    weather: null,
-    tomorrowWeather: null,
-  }
-},
-computed: {
-  weatherDescription() {
-    return this.weather?.weather[0]?.description
+    return {
+      weather: null,
+      tomorrowWeather: null,
+    }
   },
-  temperature() {
-    return Math.round(this.weather?.main?.temp)
+  computed: {
+    weatherDescription() {
+      return this.weather?.weather[0]?.description
+    },
+    temperature() {
+      return Math.round(this.weather?.main?.temp)
+    },
+    weatherIconCode() {
+      return this.weather?.weather[0]?.icon
+    },
+    tomorrowWeatherDescription() {
+      return this.tomorrowWeather?.list[0]?.weather[0]?.description
+    },
+    tomorrowTemperature() {
+      return Math.round(this.tomorrowWeather?.list[0]?.main?.temp)
+    },
+    tomorrowWeatherIconCode() {
+      return this.tomorrowWeather?.list[0]?.weather[0]?.icon
+    },
   },
-  weatherIcon() {
-    const icon = this.weather?.weather[0]?.icon
-    return icon ? `wi-owm-${icon}` : ''
-  },
-  tomorrowWeatherDescription() {
-    return this.tomorrowWeather?.list[0]?.weather[0]?.description
-  },
-  tomorrowTemperature() {
-    return Math.round(this.tomorrowWeather?.list[0]?.main?.temp)
-  },
-  tomorrowWeatherIcon() {
-    const icon = this.tomorrowWeather?.list[0]?.weather[0]?.icon
-    return icon ? `wi-owm-${icon}` : ''
-  },
-},
-
-
   methods: {
     async fetchWeatherData() {
-  const apiKey = 'f18e79e75665bd4bd01164484ad7306b'
-  const todayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${apiKey}&units=metric`
-  const tomorrowUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${this.city}&appid=${apiKey}&units=metric`
-  const [todayResponse, tomorrowResponse] = await Promise.all([
-    fetch(todayUrl),
-    fetch(tomorrowUrl),
-  ])
-  this.weather = await todayResponse.json()
-  this.tomorrowWeather = await tomorrowResponse.json()
-},
-
+      const apiKey = 'f18e79e75665bd4bd01164484ad7306b'
+      const todayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${apiKey}&units=metric`
+      const tomorrowUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${this.city}&appid=${apiKey}&units=metric`
+      const [todayResponse, tomorrowResponse] = await Promise.all([
+        fetch(todayUrl),
+        fetch(tomorrowUrl),
+      ])
+      this.weather = await todayResponse.json()
+      this.tomorrowWeather = await tomorrowResponse.json()
+    },
+    getWeatherIconUrl(iconCode) {
+      return `https://openweathermap.org/img/wn/${iconCode}.png`
+    },
   },
   mounted() {
     this.fetchWeatherData()
   },
 }
+
 </script>
+
 <style>
 .card {
   margin-bottom: 20px;
@@ -105,10 +110,6 @@ computed: {
   padding: 20px;
 }
 
-.weather-icon {
-  font-size: 64px;
-  margin-bottom: 20px;
-}
 
 .weather-description {
   font-size: 20px;
