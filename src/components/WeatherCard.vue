@@ -2,12 +2,22 @@
   <div class="card">
     <div class="card-header">
       <h3>{{ city }}</h3>
+      <div class="unit-switch">
+        <label>
+          <input type="radio" name="unit-system" value="metric" v-model="unitSystem">
+          Metric
+        </label>
+        <label>
+          <input type="radio" name="unit-system" value="imperial" v-model="unitSystem">
+          Imperial
+        </label>
+      </div>
     </div>
     <div class="card-body">
       <div class="weather-details">
         <div class="weather-info">
           <div class="weather-description">{{ weatherDescription }}</div>
-          <div class="weather-temperature">{{ temperature }}°C</div>
+          <div class="weather-temperature">{{ temperature }}{{ temperatureUnit }}</div>
           <div class="weather-icon">
             <img :src="getWeatherIconUrl(weatherIconCode)" alt="Weather Icon">
           </div>
@@ -16,7 +26,7 @@
       <div class="weather-details">
         <div class="weather-info">
           <div class="weather-description">{{ tomorrowWeatherDescription }}</div>
-          <div class="weather-temperature">{{ tomorrowTemperature }}°C</div>
+          <div class="weather-temperature">{{ tomorrowTemperature }}{{ temperatureUnit }}</div>
           <div class="weather-icon">
             <img :src="getWeatherIconUrl(tomorrowWeatherIconCode)" alt="Weather Icon">
           </div>
@@ -29,9 +39,7 @@
   </div>
 </template>
 
-
 <script>
-
 export default {
   props: {
     city: {
@@ -43,6 +51,7 @@ export default {
     return {
       weather: null,
       tomorrowWeather: null,
+      unitSystem: 'metric',
     }
   },
   computed: {
@@ -50,7 +59,14 @@ export default {
       return this.weather?.weather[0]?.description
     },
     temperature() {
-      return Math.round(this.weather?.main?.temp)
+      if (this.unitSystem === 'imperial') {
+        return Math.round(this.weather?.main?.temp * 9 / 5 + 32)
+      } else {
+        return Math.round(this.weather?.main?.temp)
+      }
+    },
+    temperatureUnit() {
+      return this.unitSystem === 'imperial' ? '°F' : '°C'
     },
     weatherIconCode() {
       return this.weather?.weather[0]?.icon
@@ -59,7 +75,11 @@ export default {
       return this.tomorrowWeather?.list[0]?.weather[0]?.description
     },
     tomorrowTemperature() {
-      return Math.round(this.tomorrowWeather?.list[0]?.main?.temp)
+      if (this.unitSystem === 'imperial') {
+        return Math.round(this.tomorrowWeather?.list[0]?.main?.temp * 9 / 5 + 32)
+      } else {
+        return Math.round(this.tomorrowWeather?.list[0]?.main?.temp)
+      }
     },
     tomorrowWeatherIconCode() {
       return this.tomorrowWeather?.list[0]?.weather[0]?.icon
@@ -68,8 +88,9 @@ export default {
   methods: {
     async fetchWeatherData() {
       const apiKey = 'f18e79e75665bd4bd01164484ad7306b'
-      const todayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${apiKey}&units=metric`
-      const tomorrowUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${this.city}&appid=${apiKey}&units=metric`
+      const units = this.unitSystem === 'metric' ? 'metric' : 'imperial'
+      const todayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${apiKey}&units=${units}`
+      const tomorrowUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${this.city}&appid=${apiKey}&units=${units}`
       const [todayResponse, tomorrowResponse] = await Promise.all([
         fetch(todayUrl),
         fetch(tomorrowUrl),
@@ -85,7 +106,6 @@ export default {
     this.fetchWeatherData()
   },
 }
-
 </script>
 
 <style>
