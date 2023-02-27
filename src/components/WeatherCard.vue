@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" :style="{ backgroundImage: `url(${backgroundImageUrl})` }">
     <div class="card-header">
       <h3>{{ city }}</h3>
       <div class="unit-switch">
@@ -55,6 +55,23 @@ export default {
     }
   },
   computed: {
+    backgroundImageUrl() {
+      const backgroundImageUrls = {
+        'clear sky': 'assets/clear.jpg',
+        'few clouds': 'assets/cloudy.jpg',
+        'overcast clouds': 'assets/cloudy.jpg',
+        'scattered clouds': 'assets/scattered_clouds.jpg',
+        'broken clouds': 'assets/broken_clouds.jpg',
+        'shower rain': 'assets/shower_rain.jpg',
+        'rainy': 'assets/rainy.jpg',
+        'thunderstorm': 'assets/thunderstorm.jpg',
+        'snowy': 'assets/snowy.jpg',
+        'light snow': 'assets/snowy.jpg',
+        'mist': 'assets/mist.jpg',
+        'light rain': 'assets/shower_rain.jpg',
+      };
+      return backgroundImageUrls[this.weatherDescription?.toLowerCase()] || '';
+    },
     weatherDescription() {
       return this.weather?.weather[0]?.description
     },
