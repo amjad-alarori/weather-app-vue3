@@ -1,6 +1,6 @@
 # vue-weather-app
 
-![alt text](https://github.com/amjad-alarori/weather-app-vue3/blob/main/weather_app_with_vue3.png?raw=true)
+![alt text](https://github.com/amjad-alarori/weather-app-vue3/blob/main/weather_app_with_vue3.png)
 
 ## Project setup
 ```
