@@ -1,5 +1,7 @@
 # vue-weather-app
 
+![alt text](https://github.com/amjad-alarori/weather-app-vue3/blob/main/assets/weather _app_with_vue3.png?raw=true)
+
 ## Project setup
 ```
 npm install
