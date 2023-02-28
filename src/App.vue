@@ -10,7 +10,7 @@
           </div>
         </form>
       </div>
-    </div>
+    </div><br>
     <div class="row">
       <div class="col-lg-10 mx-auto">
         <div class="row">
@@ -47,3 +47,12 @@ export default {
   },
 }
 </script>
+
+<style>
+@import url("https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap");
+
+.container {
+  font-family: "Montserrat", sans-serif;
+  line-height: 1.4;
+}
+</style>

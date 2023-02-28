@@ -1,7 +1,11 @@
 <template>
-  <div class="card" :style="{ backgroundImage: `url(${backgroundImageUrl})` }">
+  <div class="weather_card" :style="{ backgroundImage: `url(${backgroundImageUrl})` }">
     <div class="card-header">
-      <h3>{{ city }}</h3>
+      <div class="weather_board__card__location_title">
+        <p>{{ city }}
+          <img :src="flagUrl" alt="Flag" class="flag" width="20" height="15"/>
+        </p>
+      </div>
       <div class="unit-switch">
         <label>
           <input type="radio" name="unit-system" value="metric" v-model="unitSystem">
@@ -12,8 +16,9 @@
           Imperial
         </label>
       </div>
-    </div>
+    </div><br>
     <div class="card-body">
+      <h2 class="today">Today's Weather</h2>
       <div class="weather-details">
         <div class="weather-info">
           <div class="weather-description">{{ weatherDescription }}</div>
@@ -22,7 +27,8 @@
             <img :src="getWeatherIconUrl(weatherIconCode)" alt="Weather Icon">
           </div>
         </div>
-      </div>
+      </div><br><br>
+      <h2 class="tomorrow">Tomorrow's Weather</h2>
       <div class="weather-details">
         <div class="weather-info">
           <div class="weather-description">{{ tomorrowWeatherDescription }}</div>
@@ -57,18 +63,18 @@ export default {
   computed: {
     backgroundImageUrl() {
       const backgroundImageUrls = {
-        'clear sky': 'assets/clear.jpg',
-        'few clouds': 'assets/cloudy.jpg',
-        'overcast clouds': 'assets/cloudy.jpg',
-        'scattered clouds': 'assets/scattered_clouds.jpg',
-        'broken clouds': 'assets/broken_clouds.jpg',
-        'shower rain': 'assets/shower_rain.jpg',
-        'rainy': 'assets/rainy.jpg',
-        'thunderstorm': 'assets/thunderstorm.jpg',
-        'snowy': 'assets/snowy.jpg',
-        'light snow': 'assets/snowy.jpg',
-        'mist': 'assets/mist.jpg',
-        'light rain': 'assets/shower_rain.jpg',
+        'clear sky': 'assets/img/weather/clear.jpg',
+        'few clouds': 'assets/img/weather/clouds.jpg',
+        'overcast clouds': 'assets/img/weather/clouds.jpg',
+        'scattered clouds': 'assets/img/weather/clouds.jpg',
+        'broken clouds': 'assets/img/weather/clouds.jpg',
+        'shower rain': 'assets/img/weather/rain.jpg',
+        'rainy': 'assets/img/weather/rain.jpg',
+        'thunderstorm': 'assets/img/weather/thunderstorm.jpg',
+        'snowy': 'assets/img/weather/snow.jpg',
+        'light snow': 'assets/img/weather/snow.jpg',
+        'mist': 'assets/img/weather/mist.jpg',
+        'light rain': 'assets/img/weather/drizzle.jpg',
       };
       return backgroundImageUrls[this.weatherDescription?.toLowerCase()] || '';
     },
@@ -101,6 +107,10 @@ export default {
     tomorrowWeatherIconCode() {
       return this.tomorrowWeather?.list[0]?.weather[0]?.icon
     },
+    flagUrl() {
+      const countryCode = this.weather?.sys?.country || '';
+      return `https://flagcdn.com/20x15/${countryCode.toLowerCase()}.png`;
+    },
   },
   methods: {
     async fetchWeatherData() {
@@ -126,11 +136,52 @@ export default {
 </script>
 
 <style>
-.card {
+.weather_card {
   margin-bottom: 20px;
   border: 1px solid #ddd;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 20px;
+  color: white;
+}
+.flag {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.unit-switch {
+  display: flex;
+  justify-content: space-around;
+}
+
+.weather-details{
+  display: flex;
+  justify-content: space-around;
+}
+
+.today{
+  display: flex;
+  justify-content: center;
+}
+
+.tomorrow{
+  display: flex;
+  justify-content: center;
+}
+/* Title */
+.weather_board__card__location_title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.weather_board__card__location_title p {
+  margin-right: 5px;
+  font-weight: 400;
+  font-size: 18px;
 }
 
 .card-header {
@@ -151,7 +202,7 @@ export default {
 .weather-description {
   font-size: 20px;
   margin-bottom: 10px;
-  color: #666;
+  color: white;
 }
 
 .weather-temperature {
